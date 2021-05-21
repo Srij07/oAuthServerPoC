@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: Srij07
+Build-Jdk: 15.0.1
+Implementation-Title: oAuthserverJwt
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: oauth.server
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/oAuthserverJwt
+Created-By: Maven Integration for Eclipse
+
