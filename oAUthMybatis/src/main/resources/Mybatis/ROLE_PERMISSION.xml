@@ -1,0 +1,26 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace = "ROLE_PERMISSION">
+
+
+<resultMap id = "result" type = "com.oauth.model.Role_Permission">
+   <result property = "permission" column = "permission"/>
+   <result property = "permission_id" column = "permission_id"/>
+   <result property = "role_id" column = "role_id"/>
+   <result property = "role_name" column = "role_name"/>
+</resultMap>
+
+<select id = "getRolePermission" parameterType = "com.oauth.model.UserModel" resultMap = "result">
+select first.permission,first.permission_id,first.role_id,second.role_name from
+(select pr.name as permission, pl.permission_id, pl.role_id from
+oaoth.permission pr join oaoth.permission_role pl on pr.id=pl.permission_id) first
+join
+(select ru.role_id,rl.name as role_name from 
+oaoth.role_user ru join oaoth.role rl on ru.role_id=rl.id where user_id=(select id from oaoth.users where username=#{username})) second
+
+on first.role_id = second.role_id;
+</select>
+    	
+</mapper>

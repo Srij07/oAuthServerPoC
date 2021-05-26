@@ -1,0 +1,84 @@
+http://localhost:9000/oauth/token?grant_type=password&username=krish&password=pass
+
+with basic client-id & secret
+
+oAuth2 Server with postgres SQL & JWT key & Mybatis
+
+
+create table if not exists  oauth_client_details (
+  client_id varchar(255) not null,
+  client_secret varchar(255) not null,
+  web_server_redirect_uri varchar(2048) default null,
+  scope varchar(255) default null,
+  access_token_validity INT default null,
+  refresh_token_validity INT default null,
+  resource_ids varchar(1024) default null,
+  authorized_grant_types varchar(1024) default null,
+  authorities varchar(1024) default null,
+  additional_information varchar(4096) default null,
+  autoapprove varchar(255) default null,
+  primary key (client_id)
+);
+
+create table if not exists  permission (
+  id serial,
+  name varchar(512) default null,
+  primary key (id)
+);
+
+create table if not exists role (
+  id serial PRIMARY KEY,
+  name varchar(255)
+);
+
+create table if not exists  public.users (
+  id serial,
+  username varchar(100) not null,
+  password varchar(1024) not null,
+  email varchar(1024) not null,
+  enabled int not null,
+  accountNonExpired int not null,
+  credentialsNonExpired int not null,
+  accountNonLocked int not null,
+  primary key (id)
+);
+
+
+create table  if not exists permission_role (
+  permission_id INT,
+  role_id INT
+);
+
+
+
+create table if not exists role_user (
+  role_id INT,
+  user_id INT
+);
+
+
+INSERT INTO oauth_client_details (client_id, client_secret, web_server_redirect_uri, scope, access_token_validity, refresh_token_validity, resource_ids, authorized_grant_types, additional_information) VALUES ('mobile', '$2a$10$ts.zY4k7sP67WckTOyJawO.4tgCgqrAUequAHjO1NwHfH/jg85FO2', 'http://localhost:8080/code', 'READ,WRITE', '3600', '10000', 'inventory,payment', 'authorization_code,password,refresh_token,implicit', '{}');
+
+ INSERT INTO PERMISSION (NAME) VALUES
+ ('create_profile'),
+ ('read_profile'),
+ ('update_profile'),
+ ('delete_profile');
+
+ INSERT INTO role (NAME) VALUES
+		('ROLE_admin'),('ROLE_operator');
+
+ INSERT INTO PERMISSION_ROLE (PERMISSION_ID, ROLE_ID) VALUES
+     (1,1), /*create-> admin */
+     (2,1), /* read admin */
+     (3,1), /* update admin */
+     (4,1), /* delete admin */
+     (2,2),  /* read operator */
+     (3,2);  /* update operator */
+insert into users (id, username,password, email, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked) VALUES ('1', 'krish','$2a$10$ts.zY4k7sP67WckTOyJawO.4tgCgqrAUequAHjO1NwHfH/jg85FO2', 'k@krishantha.com', '1', '1', '1', '1');
+ insert into  users (id, username,password, email, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked) VALUES ('2', 'suranga', '$2a$10$ts.zY4k7sP67WckTOyJawO.4tgCgqrAUequAHjO1NwHfH/jg85FO2','k@krishantha.com', '1', '1', '1', '1');
+
+INSERT INTO ROLE_USER (ROLE_ID, USER_ID)
+    VALUES
+    (1, 1) /* krish-admin */,
+    (2, 2)
