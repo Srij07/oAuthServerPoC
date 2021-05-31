@@ -33,6 +33,7 @@
    <mappers>
       <mapper resource = "mybatis/USERS.xml"/>
       <mapper resource = "mybatis/ROLE_PERMISSION.xml"/>
+      <mapper resource = "mybatis/CLIENT.xml"/>
    </mappers>
    
 </configuration>
