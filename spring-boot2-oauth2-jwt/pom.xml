@@ -12,7 +12,7 @@
 	<groupId>com.marcosbarbero.lab</groupId>
 	<artifactId>spring-boot2-oauth2-jwt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>spring-boot2-oauth2-jwt</name>
 
 	<properties>
@@ -60,28 +60,6 @@
 	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>**/*.xml</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.jks</exclude>
-				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>**/*.jks</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.xml</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

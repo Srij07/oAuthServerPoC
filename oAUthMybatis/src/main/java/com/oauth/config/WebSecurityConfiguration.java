@@ -6,11 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -21,10 +25,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserDetailsService userDetailsService;
-
-    /*public WebSecurityConfiguration(final DataSource dataSource) {
-        this.dataSource = dataSource;
-    }*/
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
@@ -41,20 +41,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         if (passwordEncoder == null) {
-            //passwordEncoder = DefaultPasswordEncoderFactories.createDelegatingPasswordEncoder();
         	passwordEncoder = new BCryptPasswordEncoder();
         }
         return passwordEncoder;
     }
-
-    /*@Bean
+    
     @Override
-    public UserDetailsService userDetailsService() {
-        if (userDetailsService == null) {
-            userDetailsService = new JdbcDaoImpl();
-            ((JdbcDaoImpl) userDetailsService).setDataSource(dataSource);
-        }
-        return userDetailsService;
+    public void configure(HttpSecurity http) throws Exception{
+    	http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    }
+    
+    /*@Bean
+    SecurityWebFilterChain springSecurityWebFilterChain(ServerHttpSecurity http) {
+    	http.headers()
+    		.contentSecurityPolicy("script-src 'self'")
+    		.reportOnly(true);
+    	return http.build();
     }*/
-
 }
