@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+import com.oauth.util.CustomPasswordEncoder;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -41,14 +43,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         if (passwordEncoder == null) {
-        	passwordEncoder = new BCryptPasswordEncoder();
+        	passwordEncoder = new CustomPasswordEncoder();
         }
         return passwordEncoder;
     }
     
     @Override
     public void configure(HttpSecurity http) throws Exception{
-    	http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    	http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+    	.and()
+    	.headers()
+    	.contentSecurityPolicy("script-src 'self'")
+    	.reportOnly();
     }
     
     /*@Bean

@@ -3,6 +3,7 @@ package com.oauth.config;
 
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -21,6 +22,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -28,6 +31,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 
 import com.oauth.service.CustomClientService;
 import com.oauth.service.MyBatisSqlSessionFactoryService;
+import com.oauth.util.CustomTokenEnhancer;
 
 @Configuration
 @EnableAuthorizationServer
@@ -97,10 +101,20 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) {
+    	
+    	TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+    	tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(),jwtAccessTokenConverter()));
+    	
         endpoints.authenticationManager(this.authenticationManager)
-                .accessTokenConverter(jwtAccessTokenConverter())
+                //.accessTokenConverter(jwtAccessTokenConverter())
+        		.tokenEnhancer(tokenEnhancerChain)
                 .userDetailsService(this.userDetailsService)
                 .tokenStore(tokenStore());
+    }
+    
+    @Bean
+    public TokenEnhancer tokenEnhancer() {
+    	return new CustomTokenEnhancer();
     }
 
     @Override
