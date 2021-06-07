@@ -1,0 +1,23 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace = "USERS">
+
+
+<resultMap id = "result" type = "com.oauth.user.UserModel">
+   <result property = "username" column = "USERNAME"/>
+   <result property = "password" column = "PASSWORD"/>
+   <result property = "id" column = "ID"/>
+   <result property = "email" column = "EMAIL"/>
+   <result property = "enabled" column = "enabled"/>
+   <result property = "accountnonexpired" column = "accountnonexpired"/>
+   <result property = "credentialsnonexpired" column = "credentialsnonexpired"/>
+   <result property = "accountnonlocked" column = "accountnonlocked"/>
+</resultMap>
+
+<select id = "getByUserName" parameterType = "com.oauth.user.UserModel" resultMap = "result">
+   SELECT ID,USERNAME,PASSWORD,EMAIL,enabled,accountnonexpired,credentialsnonexpired,accountnonlocked FROM oaoth.users where USERNAME = #{username};
+</select>
+    	
+</mapper>
