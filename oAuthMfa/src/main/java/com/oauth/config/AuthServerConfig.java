@@ -1,7 +1,9 @@
 package com.oauth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,9 +18,14 @@ import org.springframework.security.oauth2.provider.TokenGranter;
 import com.oauth.config.granter.MfaTokenGranter;
 import com.oauth.config.granter.PasswordTokenGranter;
 import com.oauth.service.MfaService;
+import com.oauth.sql.MyBatisSqlSessionFactoryService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableAuthorizationServer
@@ -40,7 +47,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
-        security.checkTokenAccess("isAuthenticated()");
+        security.passwordEncoder(this.passwordEncoder).tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
     }
 
     @Override
@@ -51,11 +58,25 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
+        /*clients.inMemory()
                 .withClient("client")
                 .secret(passwordEncoder.encode("secret"))
                 .authorizedGrantTypes("password", "mfa")
-                .scopes("read");
+                .scopes("read");*/
+    	clients.jdbc(dataSource());
+    }
+    
+    @Bean
+    public DataSource dataSource() throws IOException {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        MyBatisSqlSessionFactoryService sessionService = MyBatisSqlSessionFactoryService.getInstance();
+        Properties properties = new Properties();
+        properties = sessionService.getProperty();
+        dataSource.setDriverClassName(properties.getProperty("driver"));
+        dataSource.setUrl(properties.getProperty("url"));
+        dataSource.setUsername(properties.getProperty("username"));
+        dataSource.setPassword(properties.getProperty("password"));
+        return dataSource;
     }
 
     private TokenGranter tokenGranter(final AuthorizationServerEndpointsConfigurer endpoints) {
