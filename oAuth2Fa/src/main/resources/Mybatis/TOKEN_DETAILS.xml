@@ -1,0 +1,26 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="TOKEN_DETAILS">
+
+	<resultMap id="result" type="com.oauth.model.AuthToken">
+		<result property="auth_code" column="auth_code" />
+		<result property="oauth_token" column="oauth_token" />
+		<result property="user_name" column="username" />
+		<result property="request_time" column="request_time" />
+		<result property="activation_time" column="activation_time" />
+		<result property="expiry_time" column="expiry_time" />
+	</resultMap>
+
+	<select id="getTokenByCode"	parameterType="com.oauth.model.AuthToken" resultMap="result">
+		SELECT * FROM oaoth.oauth_token_details where auth_code = #{auth_code};
+	</select>
+
+	<insert id="isertToken"	parameterType="com.oauth.model.AuthToken">
+		INSERT INTO oaoth.oauth_token_details (auth_code,oauth_token,username )
+		VALUES (#{auth_code},#{oauth_token},#{user_name});
+
+	</insert>
+
+</mapper>
